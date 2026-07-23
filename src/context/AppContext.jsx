@@ -23,6 +23,7 @@ export const AppProvider = ({ children }) => {
   const [activeVideo, setActiveVideo] = useState(null);
   const [activeCourse, setActiveCourse] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPlansModal, setShowPlansModal] = useState(false);
 
   // 1. Auth Listener
   useEffect(() => {
@@ -204,6 +205,8 @@ export const AppProvider = ({ children }) => {
     courses,
     settings,
     updateSettings: handleUpdateSettings,
+    showPlansModal,
+    setShowPlansModal,
     currentUser: user, // Alias user profile as currentUser to prevent refactoring catalog files
     setCurrentUser: changeCurrentUserSession,
     activeVideo,

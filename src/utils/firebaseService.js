@@ -329,6 +329,46 @@ export const firebaseService = {
     }
   },
 
+  async signUpUser(email, password, name) {
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Create Firebase Auth account
+    const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+    const uid = userCredential.user.uid;
+
+    // Fetch trial duration setting from Firestore
+    let trialDays = 5;
+    try {
+      const settingsSnap = await getDoc(doc(db, 'settings', 'global'));
+      if (settingsSnap.exists()) {
+        trialDays = Number(settingsSnap.data().trialDays) || 5;
+      }
+    } catch (e) {
+      console.error('Error fetching settings for new signup:', e);
+    }
+
+    const start = new Date();
+    const end = new Date();
+    end.setDate(end.getDate() + trialDays);
+
+    const profile = {
+      id: uid,
+      uid: uid,
+      name: name.trim(),
+      email: cleanEmail,
+      role: 'user',
+      status: 'active',
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0],
+      accessHistory: [],
+      isTrial: true
+    };
+
+    // Write profile to Firestore
+    await setDoc(doc(db, 'users', uid), profile);
+    return profile;
+  },
+
   async signOut() {
     await signOut(auth);
   },

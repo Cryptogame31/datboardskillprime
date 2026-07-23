@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Play, Info, Film, Eye, X, BookOpen, Clock, AlertTriangle, Layers, Folder, ChevronRight, ChevronDown } from 'lucide-react';
+import { 
+  Play, Info, Film, Eye, X, BookOpen, Clock, AlertTriangle, 
+  Layers, Folder, ChevronRight, ChevronDown, Sparkles, ArrowRight, 
+  ExternalLink, ShieldAlert 
+} from 'lucide-react';
 
 export default function Catalog() {
-  const { courses, playVideo, searchQuery, currentUser } = useApp();
+  const { 
+    courses, playVideo, searchQuery, currentUser, 
+    settings, showPlansModal, setShowPlansModal, updateSubscriber 
+  } = useApp();
+
+  const calculateTrialDaysRemaining = () => {
+    if (!currentUser || !currentUser.endDate) return 0;
+    const diffTime = new Date(currentUser.endDate) - new Date();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? diffDays : 0;
+  };
+
   const [selectedCourse, setSelectedCourse] = useState(null);
   
   // Track which module is expanded in the details modal accordion
@@ -78,6 +93,32 @@ export default function Catalog() {
 
   return (
     <div className="pb-24 animate-fade-in">
+      {/* Trial Promo Gift Banner */}
+      {calculateTrialDaysRemaining() > 0 && (
+        <div className="bg-gradient-to-r from-brand-cyan/20 via-brand-dark/95 to-brand-red/20 border-b border-white/10 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-in relative z-20">
+          <div className="flex items-center gap-3 text-left">
+            <div className="p-2 bg-brand-cyan/10 border border-brand-cyan/20 rounded-xl text-brand-cyan animate-pulse">
+              <Sparkles className="w-5 h-5 fill-current" />
+            </div>
+            <div>
+              <h4 className="text-xs md:text-sm font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                🎁 ¡Regalo Especial: Periodo de Prueba Activo!
+              </h4>
+              <p className="text-[10px] md:text-xs text-gray-400 mt-0.5">
+                Tu regalo de <strong className="text-brand-cyan">{settings?.trialDays || 5} días gratis</strong> está disponible. Te quedan <strong className="text-brand-red">{calculateTrialDaysRemaining()} días</strong> de cortesía.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowPlansModal(true)}
+            className="px-4 py-2 bg-brand-cyan hover:brightness-110 text-brand-dark text-[11px] font-black rounded-xl uppercase tracking-wider transition-all shadow-md hover:scale-105 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+          >
+            Ver Planes de Pago
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Access alert if subscription is expiring soon */}
       {currentUser?.status === 'expiring' && (
         <div className="mx-6 md:mx-12 mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-2xl flex items-center gap-3 text-xs md:text-sm">
@@ -398,6 +439,82 @@ export default function Catalog() {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Plans Modal Overlay */}
+      {showPlansModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+          <div className="max-w-md w-full bg-brand-surface border border-white/10 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden glass-panel">
+            <button 
+              onClick={() => setShowPlansModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="inline-flex p-4 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan mb-4 animate-bounce">
+              <Sparkles className="w-8 h-8 fill-current" />
+            </div>
+
+            <h2 className="text-xl font-black text-white mb-1 uppercase tracking-tight">
+              Planes de Suscripción Premium
+            </h2>
+            <p className="text-[11px] text-gray-400 mb-6">
+              Elige el plan que mejor se adapte a tu formación en Skill Prime
+            </p>
+
+            <div className="space-y-4 mb-6">
+              {/* Plan Mensual */}
+              <div className="p-4 bg-black/25 hover:bg-black/35 border border-white/5 hover:border-brand-red/20 rounded-2xl transition-all text-left flex items-center justify-between gap-4">
+                <div>
+                  <div className="font-bold text-white text-xs">Plan Mensual</div>
+                  <p className="text-[9px] text-gray-500 mt-0.5">Renovación automática mes a mes.</p>
+                  <div className="text-sm font-black text-white mt-1.5">$4.00 <span className="text-[10px] text-gray-500 font-normal">USD / mes</span></div>
+                </div>
+                <button
+                  onClick={() => {
+                    if (settings.paymentLinkMonthly) window.open(settings.paymentLinkMonthly, '_blank');
+                    else alert('Enlace de pago no configurado por el administrador.');
+                  }}
+                  className="px-3.5 py-2 bg-brand-red hover:bg-brand-red-hover text-white text-[10px] font-bold rounded-xl uppercase flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  Contratar
+                  <ExternalLink className="w-3 h-3" />
+                </button>
+              </div>
+
+              {/* Plan Anual */}
+              <div className="p-4 bg-brand-cyan/5 hover:bg-brand-cyan/10 border border-brand-cyan/20 rounded-2xl transition-all text-left flex items-center justify-between gap-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-brand-cyan text-brand-dark font-black text-[8px] uppercase tracking-widest px-2.5 py-0.5 rounded-bl-lg">
+                  Ahorra 10%
+                </div>
+                <div>
+                  <div className="font-bold text-white text-xs">Plan Anual</div>
+                  <p className="text-[9px] text-gray-500 mt-0.5">Acceso por 365 días al catálogo completo.</p>
+                  <div className="text-sm font-black text-white mt-1.5">
+                    $43.20 <span className="text-[10px] text-gray-500 font-normal">USD / año</span>
+                    <span className="text-[9px] text-brand-cyan font-bold block mt-0.5 line-through decoration-brand-red decoration-2">$48.00 USD</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    if (settings.paymentLinkYearly) window.open(settings.paymentLinkYearly, '_blank');
+                    else alert('Enlace de pago no configurado por el administrador.');
+                  }}
+                  className="px-3.5 py-2 bg-brand-cyan hover:brightness-110 text-brand-dark text-[10px] font-bold rounded-xl uppercase flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  Contratar
+                  <ExternalLink className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+
+            <div className="text-[9px] text-gray-500 flex items-center justify-center gap-1">
+              <ShieldAlert className="w-3 h-3" />
+              <span>Transacciones cifradas y protegidas.</span>
             </div>
           </div>
         </div>
