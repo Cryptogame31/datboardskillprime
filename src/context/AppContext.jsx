@@ -18,6 +18,7 @@ export const AppProvider = ({ children }) => {
   
   const [users, setUsers] = useState([]); // All subscribers from Firestore
   const [courses, setCourses] = useState([]); // All courses from Firestore
+  const [settings, setSettings] = useState({ trialDays: 5, paymentLinkMonthly: '', paymentLinkYearly: '' });
   
   const [activeVideo, setActiveVideo] = useState(null);
   const [activeCourse, setActiveCourse] = useState(null);
@@ -71,9 +72,14 @@ export const AppProvider = ({ children }) => {
       }
     });
 
+    const unsubscribeSettings = firebaseService.subscribeToSettings((settingsData) => {
+      setSettings(settingsData);
+    });
+
     return () => {
       unsubscribeCourses();
       unsubscribeUsers();
+      unsubscribeSettings();
     };
   }, [user?.uid]);
 
@@ -185,6 +191,10 @@ export const AppProvider = ({ children }) => {
     setActiveCourse(null);
   };
 
+  const handleUpdateSettings = async (newSettings) => {
+    await firebaseService.saveSettings(newSettings);
+  };
+
   const value = {
     user,
     userRole,
@@ -192,6 +202,8 @@ export const AppProvider = ({ children }) => {
     authLoading,
     users,
     courses,
+    settings,
+    updateSettings: handleUpdateSettings,
     currentUser: user, // Alias user profile as currentUser to prevent refactoring catalog files
     setCurrentUser: changeCurrentUserSession,
     activeVideo,

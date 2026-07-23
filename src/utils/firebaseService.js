@@ -232,12 +232,25 @@ export const firebaseService = {
   // SEEDER
   async seedDatabaseIfEmpty() {
     try {
+      // 1. Seed courses
       const coursesSnap = await getDocs(collection(db, 'courses'));
       if (coursesSnap.empty) {
         console.log('Firestore courses collection is empty. Seeding defaults...');
         for (const course of DEFAULT_COURSES) {
           await setDoc(doc(db, 'courses', course.id), course);
         }
+      }
+      
+      // 2. Seed settings
+      const settingsRef = doc(db, 'settings', 'global');
+      const settingsSnap = await getDoc(settingsRef);
+      if (!settingsSnap.exists()) {
+        console.log('Firestore settings document is empty. Seeding defaults...');
+        await setDoc(settingsRef, {
+          trialDays: 5,
+          paymentLinkMonthly: 'https://buy.stripe.com/mock_monthly_skill_prime',
+          paymentLinkYearly: 'https://buy.stripe.com/mock_yearly_skill_prime'
+        });
       }
     } catch (e) {
       console.error('Error seeding Firestore:', e);
@@ -368,19 +381,59 @@ export const firebaseService = {
     });
   },
 
+  subscribeToSettings(callback) {
+    this.seedDatabaseIfEmpty();
+    const settingsRef = doc(db, 'settings', 'global');
+    return onSnapshot(settingsRef, (docSnap) => {
+      if (docSnap.exists()) {
+        callback(docSnap.data());
+      } else {
+        callback({
+          trialDays: 5,
+          paymentLinkMonthly: 'https://buy.stripe.com/mock_monthly_skill_prime',
+          paymentLinkYearly: 'https://buy.stripe.com/mock_yearly_skill_prime'
+        });
+      }
+    }, (error) => {
+      console.error("Settings snapshot error:", error);
+    });
+  },
+
+  async saveSettings(settingsData) {
+    const settingsRef = doc(db, 'settings', 'global');
+    await setDoc(settingsRef, settingsData, { merge: true });
+  },
+
   // SUBSCRIBERS CRUD
   async saveUser(userId, userData) {
     await setDoc(doc(db, 'users', userId), userData, { merge: true });
   },
 
   async createUserInFirestore(userData) {
-    // Note: Creating general custom users can be registered with a default password 'password123'
-    // in Auth if done via simulated signup, or directly saved in Firestore.
-    // If saving in Firestore first, we use a unique ID.
+    // Fetch settings to know how many trial days to assign
+    let trialDays = 5;
+    try {
+      const settingsSnap = await getDoc(doc(db, 'settings', 'global'));
+      if (settingsSnap.exists()) {
+        trialDays = Number(settingsSnap.data().trialDays) || 5;
+      }
+    } catch (e) {
+      console.error('Error fetching settings for new user:', e);
+    }
+
+    const start = new Date();
+    const end = new Date();
+    end.setDate(end.getDate() + trialDays);
+
+    const calculatedStartDate = userData.startDate || start.toISOString().split('T')[0];
+    const calculatedEndDate = userData.endDate || end.toISOString().split('T')[0];
+
     const tempId = `temp-user-${Date.now()}`;
     await setDoc(doc(db, 'users', tempId), {
       id: tempId,
       accessHistory: [],
+      startDate: calculatedStartDate,
+      endDate: calculatedEndDate,
       ...userData
     });
     return tempId;
