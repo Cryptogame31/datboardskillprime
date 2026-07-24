@@ -5,6 +5,7 @@ import {
   Layers, Folder, ChevronRight, ChevronDown, Sparkles, ArrowRight, 
   ExternalLink, ShieldAlert 
 } from 'lucide-react';
+import { getAutoThumbnail } from '../../utils/driveMapper';
 
 export default function Catalog() {
   const { 
@@ -375,7 +376,7 @@ export default function Catalog() {
                           {/* Episode Thumbnail (16:9 Aspect) */}
                           <div className="w-full sm:w-44 shrink-0 aspect-video rounded-xl overflow-hidden bg-black/40 relative">
                             <img 
-                              src={vid.thumbnailUrl || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80'} 
+                              src={getAutoThumbnail(vid.url || vid.driveUrl, vid.thumbnailUrl)} 
                               alt={vid.title} 
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               loading="lazy"

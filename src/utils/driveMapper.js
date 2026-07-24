@@ -98,3 +98,24 @@ export function getDriveDownloadUrl(url) {
   if (!fileId) return url;
   return `https://drive.google.com/uc?export=download&id=${fileId}`;
 }
+
+export function getAutoThumbnail(videoUrl, customThumbnail) {
+  if (customThumbnail && customThumbnail.trim() !== '') {
+    return customThumbnail;
+  }
+
+  // Extract YouTube ID
+  const youtubeId = extractYoutubeVideoId(videoUrl);
+  if (youtubeId) {
+    return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+  }
+
+  // Extract Vimeo ID (vimeo fallback)
+  const vimeoId = extractVimeoVideoId(videoUrl);
+  if (vimeoId) {
+    return 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80';
+  }
+
+  // Fallback default placeholder
+  return 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80';
+}
