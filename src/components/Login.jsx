@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { firebaseService } from '../utils/firebaseService';
 import { 
   Film, Lock, Mail, AlertCircle, Shield, 
-  User, Loader2, Eye, EyeOff, CheckCircle2, ArrowLeft 
+  User, Loader2, Eye, EyeOff, CheckCircle2, ArrowLeft, Smartphone 
 } from 'lucide-react';
 
 export default function Login({ onLoginSuccess }) {
@@ -448,6 +448,21 @@ export default function Login({ onLoginSuccess }) {
             </div>
           </div>
         )}
+
+        {/* Mobile App Download Shortcut */}
+        <div className="mt-6 pt-4 border-t border-white/5 text-center">
+          <a
+            href="/skill-prime.apk"
+            download="skill-prime.apk"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 hover:border-brand-cyan/45 text-brand-cyan rounded-xl text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+          >
+            <Smartphone className="w-4 h-4 animate-bounce text-brand-cyan" />
+            Descargar App para Android (APK)
+          </a>
+          <p className="text-[8px] text-gray-500 mt-1.5 uppercase tracking-widest leading-relaxed">
+            Lleva tus lecciones y videos en tu dispositivo móvil
+          </p>
+        </div>
 
       </div>
     </div>
