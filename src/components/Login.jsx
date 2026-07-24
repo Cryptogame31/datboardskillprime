@@ -20,6 +20,30 @@ export default function Login({ onLoginSuccess }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  React.useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      alert('Para instalar Skill Prime en tu dispositivo:\n\n' +
+            '• En Android: Abre esta web en Chrome, presiona el menú de 3 puntos en la esquina superior derecha y selecciona "Instalar Aplicación" o "Agregar a la pantalla principal".\n' +
+            '• En iOS (iPhone/iPad): Abre esta web en Safari, presiona el botón "Compartir" (flecha hacia arriba) y selecciona "Agregar a la pantalla de inicio".');
+    }
+  };
 
   const handleModeChange = (newMode) => {
     setMode(newMode);
@@ -451,16 +475,15 @@ export default function Login({ onLoginSuccess }) {
 
         {/* Mobile App Download Shortcut */}
         <div className="mt-6 pt-4 border-t border-white/5 text-center">
-          <a
-            href="/skill-prime.apk"
-            download="skill-prime.apk"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 hover:border-brand-cyan/45 text-brand-cyan rounded-xl text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+          <button
+            onClick={handleInstallApp}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 hover:border-brand-cyan/45 text-brand-cyan rounded-xl text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm mx-auto"
           >
             <Smartphone className="w-4 h-4 animate-bounce text-brand-cyan" />
-            Descargar App para Android (APK)
-          </a>
+            Descargar / Instalar Aplicación
+          </button>
           <p className="text-[8px] text-gray-500 mt-1.5 uppercase tracking-widest leading-relaxed">
-            Lleva tus lecciones y videos en tu dispositivo móvil
+            Instala Skill Prime como aplicación en tu pantalla de inicio
           </p>
         </div>
 

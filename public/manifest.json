@@ -1,0 +1,18 @@
+{
+  "short_name": "Skill Prime",
+  "name": "Skill Prime - VOD Academy",
+  "description": "Accede a tus cursos y videos de trading y finanzas en tiempo real.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#060709",
+  "theme_color": "#e50914",
+  "display": "standalone",
+  "orientation": "portrait"
+}
