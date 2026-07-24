@@ -49,42 +49,16 @@ export default function Catalog() {
   );
 
   const handlePlayFeatured = () => {
-    if (featuredCourse && featuredCourse.modules.length > 0 && featuredCourse.modules[0].videos.length > 0) {
+    if (featuredCourse && featuredCourse.modules && featuredCourse.modules.length > 0 && featuredCourse.modules[0].videos && featuredCourse.modules[0].videos.length > 0) {
       playVideo(featuredCourse.modules[0].videos[0], featuredCourse);
-    } else if (featuredCourse && featuredCourse.modules.length > 0 && featuredCourse.modules[0].driveUrl) {
-      // If module has no videos but has folder drive link, play the folder embed!
-      playVideo({
-        id: featuredCourse.modules[0].id,
-        title: `Carpeta: ${featuredCourse.modules[0].title}`,
-        description: featuredCourse.modules[0].description,
-        driveUrl: featuredCourse.modules[0].driveUrl,
-        url: ''
-      }, featuredCourse);
     } else {
-      alert('Este curso no tiene contenidos cargados.');
+      alert('Este curso no tiene videos cargados.');
     }
   };
 
   const handlePlayVideo = (video, course, moduleTitle) => {
     playVideo({ ...video, moduleTitle }, course);
     setSelectedCourse(null);
-  };
-
-  const handlePlayFolder = (mod, course) => {
-    // Treat the entire folder as a video item to play in embeddedfolderview
-    playVideo({
-      id: mod.id,
-      title: `Carpeta: ${mod.title}`,
-      description: mod.description || 'Vista previa de carpeta de Google Drive.',
-      driveUrl: mod.driveUrl,
-      url: '',
-      moduleTitle: mod.title
-    }, course);
-    setSelectedCourse(null);
-  };
-
-  const toggleModuleExpand = (modId) => {
-    setExpandedModuleId(expandedModuleId === modId ? null : modId);
   };
 
   const handleCourseClick = (course) => {
@@ -322,15 +296,11 @@ export default function Catalog() {
               </p>
 
               {/* Action play button */}
-              {selectedCourse.modules && selectedCourse.modules.length > 0 && (
+              {selectedCourse.modules && selectedCourse.modules.length > 0 && selectedCourse.modules[0].videos && selectedCourse.modules[0].videos.length > 0 && (
                 <button
                   onClick={() => {
                     const firstModule = selectedCourse.modules[0];
-                    if (firstModule.videos && firstModule.videos.length > 0) {
-                      handlePlayVideo(firstModule.videos[0], selectedCourse, firstModule.title);
-                    } else if (firstModule.driveUrl) {
-                      handlePlayFolder(firstModule, selectedCourse);
-                    }
+                    handlePlayVideo(firstModule.videos[0], selectedCourse, firstModule.title);
                   }}
                   className="flex items-center gap-2 px-6 py-3 bg-brand-red hover:bg-brand-red-hover text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg hover:shadow-brand-red/30 hover:scale-105 cursor-pointer"
                 >
@@ -388,34 +358,11 @@ export default function Catalog() {
                         {activeSeason.description || 'Detalles de la temporada.'}
                       </p>
                     </div>
-
-                    {/* Direct drive folder link shortcut */}
-                    {activeSeason.driveUrl && (
-                      <button
-                        onClick={() => handlePlayFolder(activeSeason, selectedCourse)}
-                        className="flex items-center gap-1.5 px-4 py-2 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 text-brand-cyan rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer"
-                      >
-                        <Folder className="w-4 h-4" />
-                        Explorar Carpeta Drive
-                      </button>
-                    )}
                   </div>
 
                   {videosList.length === 0 ? (
                     <div className="p-8 text-center bg-white/2 border border-white/5 rounded-2xl text-xs text-gray-500">
-                      {activeSeason.driveUrl ? (
-                        <div className="space-y-3">
-                          <p>No hay clases individuales registradas. Haz clic abajo para abrir la carpeta Drive.</p>
-                          <button
-                            onClick={() => handlePlayFolder(activeSeason, selectedCourse)}
-                            className="py-2 px-5 bg-brand-cyan hover:brightness-110 text-brand-dark font-black rounded-xl text-xs uppercase cursor-pointer"
-                          >
-                            Explorar Carpeta de Archivos
-                          </button>
-                        </div>
-                      ) : (
-                        'No hay capítulos disponibles en esta temporada.'
-                      )}
+                      No hay capítulos disponibles en esta temporada todavía.
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
