@@ -33,22 +33,25 @@ const DEFAULT_COURSES = [
         title: 'Cripto Monedas',
         description: 'Aprende los fundamentos de blockchain, criptomonedas, DeFi y trading de activos digitales.',
         driveUrl: 'https://drive.google.com/drive/folders/19UiA-GJFW56WI4f3ID2GVoez1IgwLJ4B',
+        posterUrl: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-zdt-c1',
             title: '1. Introducción al ecosistema Blockchain',
-            description: 'En esta clase introductoria analizamos qué es blockchain, cómo funciona el consenso y el origen de Bitcoin.',
+            description: 'En esta lección analizamos qué es blockchain, cómo funciona el consenso distribuido y el origen de Bitcoin.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             driveUrl: 'https://drive.google.com/file/d/19UiA-GJFW56WI4f3ID2GVoez1IgwLJ4B/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&w=600&q=80',
             duration: '10:15',
             order: 1
           },
           {
             id: 'vid-zdt-c2',
             title: '2. Smart Contracts y Redes Ethereum',
-            description: 'Explicación técnica de contratos inteligentes, Solidity, gas fees y cómo interactuar con DApps.',
+            description: 'Explicación de contratos inteligentes, Solidity, gas fees y cómo interactuar con DApps mediante Web3.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
             driveUrl: 'https://drive.google.com/file/d/19UiA-GJFW56WI4f3ID2GVoez1IgwLJ4B/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=600&q=80',
             duration: '14:22',
             order: 2
           },
@@ -58,6 +61,7 @@ const DEFAULT_COURSES = [
             description: 'Material complementario en formato PDF para repasar los conceptos fundamentales de criptoactivos.',
             url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
             driveUrl: '',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80',
             duration: 'PDF Doc',
             order: 3
           }
@@ -68,13 +72,15 @@ const DEFAULT_COURSES = [
         title: 'Finanzas',
         description: 'Gestión de finanzas personales, presupuestos, portafolios de inversión a largo plazo y psicología del dinero.',
         driveUrl: 'https://drive.google.com/drive/folders/13r310iOfdqvJuGgId6F_CHE77vwsKiG3',
+        posterUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-zdt-f1',
             title: '1. Fundamentos de Finanzas e Interés Compuesto',
-            description: 'Comprende el poder del interés compuesto, la inflación y cómo estructurar un plan de ahorro e inversión estable.',
+            description: 'Comprende el poder del interés compuesto, la inflación y cómo estructurar un plan de inversión estable.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
             driveUrl: 'https://drive.google.com/file/d/13r310iOfdqvJuGgId6F_CHE77vwsKiG3/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80',
             duration: '15:02',
             order: 1
           },
@@ -84,6 +90,7 @@ const DEFAULT_COURSES = [
             description: 'Modelos de asignación de activos, renta fija vs variable y rebalanceo trimestral.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
             driveUrl: 'https://drive.google.com/file/d/13r310iOfdqvJuGgId6F_CHE77vwsKiG3/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80',
             duration: '08:48',
             order: 2
           }
@@ -94,6 +101,7 @@ const DEFAULT_COURSES = [
         title: 'Horus',
         description: 'Estrategias avanzadas de Trading cuantitativo basadas en la metodología Horus. Análisis técnico y liquidez.',
         driveUrl: 'https://drive.google.com/drive/folders/1IYh0M7ROw7dxjDTSIhBfFA6-2_LQzuGZ',
+        posterUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-zdt-h1',
@@ -101,6 +109,7 @@ const DEFAULT_COURSES = [
             description: 'Cómo identificar order blocks, vacíos de liquidez (FVG) y configurar entradas de alta precisión.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
             driveUrl: 'https://drive.google.com/file/d/1IYh0M7ROw7dxjDTSIhBfFA6-2_LQzuGZ/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80',
             duration: '12:05',
             order: 1
           }
@@ -111,6 +120,7 @@ const DEFAULT_COURSES = [
         title: 'Master',
         description: 'El programa definitivo para convertirse en trader profesional. Gestión de riesgo extrema y setups de alta probabilidad.',
         driveUrl: 'https://drive.google.com/drive/folders/1cTds_scIVL48v70PTNHwd2Y4WqGiUXZ8',
+        posterUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-zdt-m1',
@@ -118,6 +128,7 @@ const DEFAULT_COURSES = [
             description: 'La clave del trading no es el sistema, es la mente. Cómo superar rachas de pérdidas y evitar la sobreoperación.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
             driveUrl: 'https://drive.google.com/file/d/1cTds_scIVL48v70PTNHwd2Y4WqGiUXZ8/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80',
             duration: '18:30',
             order: 1
           }
@@ -128,6 +139,7 @@ const DEFAULT_COURSES = [
         title: 'Opciones y Bolsa',
         description: 'Estrategias de opciones financieras (Calls, Puts, Spreads) y análisis de bolsa americana.',
         driveUrl: 'https://drive.google.com/drive/folders/1_AGgy-ayq8ZcEthLd-hrtnRpqrOJPf0Q',
+        posterUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-zdt-o1',
@@ -135,6 +147,7 @@ const DEFAULT_COURSES = [
             description: 'Qué es una opción, derechos vs obligaciones, strike price y primas de compra.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
             driveUrl: 'https://drive.google.com/file/d/1_AGgy-ayq8ZcEthLd-hrtnRpqrOJPf0Q/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80',
             duration: '14:50',
             order: 1
           }
@@ -154,6 +167,7 @@ const DEFAULT_COURSES = [
         title: 'cursos_organizados',
         description: 'Módulo de organización metodológica y clasificación de cursos en la nube.',
         driveUrl: 'https://drive.google.com/drive/folders/1el2Tn_7quz_dhY6soI3v3ybZ1ykeJ2eK',
+        posterUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-vel-1',
@@ -161,6 +175,7 @@ const DEFAULT_COURSES = [
             description: 'Cómo organizar carpetas de recursos, archivos de video y material complementario en la nube.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
             driveUrl: 'https://drive.google.com/file/d/1el2Tn_7quz_dhY6soI3v3ybZ1ykeJ2eK/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',
             duration: '09:12',
             order: 1
           }
@@ -180,6 +195,7 @@ const DEFAULT_COURSES = [
         title: 'Electromagnetismo Básico',
         description: 'Introducción al magnetismo, campo eléctrico y simulaciones en laboratorio.',
         driveUrl: 'https://drive.google.com/drive/folders/1JLZCnhh9-DDgHxNrp9HXJCEAtsLQ1UNI',
+        posterUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80',
         videos: [
           {
             id: 'vid-em-1',
@@ -187,6 +203,7 @@ const DEFAULT_COURSES = [
             description: 'Simulación interactiva de inducción electromagnética, flujo magnético y la Ley de Lenz.',
             url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
             driveUrl: 'https://drive.google.com/file/d/1JLZCnhh9-DDgHxNrp9HXJCEAtsLQ1UNI/view',
+            thumbnailUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=600&q=80',
             duration: '11:45',
             order: 1
           }

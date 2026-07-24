@@ -34,6 +34,7 @@ export default function ContentCMS() {
   const [moduleTitle, setModuleTitle] = useState('');
   const [moduleDesc, setModuleDesc] = useState('');
   const [moduleDriveUrl, setModuleDriveUrl] = useState('');
+  const [modulePosterUrl, setModulePosterUrl] = useState('');
 
   // Video Form State
   const [videoEditId, setVideoEditId] = useState(null);
@@ -42,6 +43,7 @@ export default function ContentCMS() {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoDriveUrl, setVideoDriveUrl] = useState('');
   const [videoDuration, setVideoDuration] = useState('10:00');
+  const [videoThumbnailUrl, setVideoThumbnailUrl] = useState('');
 
   // Submit Course Form (Level 1)
   const handleSubmitCourse = (e) => {
@@ -84,6 +86,7 @@ export default function ContentCMS() {
       title: moduleTitle,
       description: moduleDesc,
       driveUrl: moduleDriveUrl,
+      posterUrl: modulePosterUrl || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
     };
 
     if (moduleEditId) {
@@ -101,6 +104,7 @@ export default function ContentCMS() {
     setModuleTitle('');
     setModuleDesc('');
     setModuleDriveUrl('');
+    setModulePosterUrl('');
     setShowModuleModal(false);
   };
 
@@ -124,6 +128,7 @@ export default function ContentCMS() {
       url: finalUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
       driveUrl: videoDriveUrl,
       duration: videoDuration || '10:00',
+      thumbnailUrl: videoThumbnailUrl || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80',
       moduleTitle: selectedModule.title
     };
 
@@ -148,6 +153,7 @@ export default function ContentCMS() {
     setVideoUrl('');
     setVideoDriveUrl('');
     setVideoDuration('10:00');
+    setVideoThumbnailUrl('');
     setShowVideoModal(false);
   };
 
@@ -166,6 +172,7 @@ export default function ContentCMS() {
     setModuleTitle(mod.title);
     setModuleDesc(mod.description || '');
     setModuleDriveUrl(mod.driveUrl || '');
+    setModulePosterUrl(mod.posterUrl || '');
     setShowModuleModal(true);
   };
 
@@ -176,6 +183,7 @@ export default function ContentCMS() {
     setVideoUrl(video.url);
     setVideoDriveUrl(video.driveUrl || '');
     setVideoDuration(video.duration);
+    setVideoThumbnailUrl(video.thumbnailUrl || '');
     setShowVideoModal(true);
   };
 
@@ -677,6 +685,17 @@ export default function ContentCMS() {
             </div>
 
             <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400">URL del Póster / Temporada</label>
+              <input
+                type="url"
+                value={modulePosterUrl}
+                onChange={(e) => setModulePosterUrl(e.target.value)}
+                placeholder="https://images.unsplash.com/..."
+                className="w-full p-2.5 bg-black/30 border border-white/5 rounded-xl text-xs text-white focus:border-brand-red/50 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-gray-400">Descripción del Módulo</label>
               <textarea
                 value={moduleDesc}
@@ -766,6 +785,17 @@ export default function ContentCMS() {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="https://.../bunny.mp4"
+                className="w-full p-2.5 bg-black/30 border border-white/5 rounded-xl text-xs text-white focus:border-brand-red/50 outline-none"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400">URL de la Miniatura del Capítulo (16:9)</label>
+              <input
+                type="url"
+                value={videoThumbnailUrl}
+                onChange={(e) => setVideoThumbnailUrl(e.target.value)}
+                placeholder="https://images.unsplash.com/..."
                 className="w-full p-2.5 bg-black/30 border border-white/5 rounded-xl text-xs text-white focus:border-brand-red/50 outline-none"
               />
             </div>

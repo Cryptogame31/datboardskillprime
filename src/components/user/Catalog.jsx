@@ -20,9 +20,15 @@ export default function Catalog() {
   };
 
   const [selectedCourse, setSelectedCourse] = useState(null);
-  
-  // Track which module is expanded in the details modal accordion
-  const [expandedModuleId, setExpandedModuleId] = useState(null);
+  const [activeSeasonId, setActiveSeasonId] = useState(null);
+
+  React.useEffect(() => {
+    if (selectedCourse && selectedCourse.modules && selectedCourse.modules.length > 0) {
+      setActiveSeasonId(selectedCourse.modules[0].id);
+    } else {
+      setActiveSeasonId(null);
+    }
+  }, [selectedCourse]);
 
   // Featured Course for Hero
   const featuredCourse = courses.find(c => c.id === 'course-zdt') || courses[0];
@@ -280,166 +286,179 @@ export default function Catalog() {
         </div>
       )}
 
-      {/* Course Detail Drawer / Modal (with Accordion Modules) */}
+      {/* Course Detail Fullscreen Overlay (HBO Max Style) */}
       {selectedCourse && (
-        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-2xl bg-brand-surface border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative max-h-[85vh] flex flex-col">
-            
+        <div className="fixed inset-0 z-50 bg-[#060709] overflow-y-auto backdrop-blur-md animate-fade-in flex flex-col">
+          {/* Header Hero */}
+          <div className="h-[50vh] md:h-[60vh] w-full relative flex items-end p-6 md:p-12 shrink-0 overflow-hidden">
+            {/* Background Backdrop */}
+            <img 
+              src={selectedCourse.posterUrl} 
+              alt={selectedCourse.title} 
+              className="absolute inset-0 w-full h-full object-cover opacity-25 filter blur-[0.5px]" 
+            />
+            {/* Ambient gradients */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#060709] via-[#060709]/60 to-transparent"></div>
+            <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#060709]/80 to-transparent hidden md:block"></div>
+
             <button 
               onClick={() => setSelectedCourse(null)}
-              className="absolute top-4 right-4 z-20 p-2 bg-black/60 hover:bg-black text-gray-400 hover:text-white rounded-full transition-colors cursor-pointer"
+              className="absolute top-6 right-6 z-20 p-2 bg-black/60 hover:bg-black border border-white/10 text-gray-400 hover:text-white rounded-full transition-all cursor-pointer shadow-lg hover:scale-105"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Header Poster */}
-            <div className="h-48 md:h-52 w-full relative shrink-0">
-              <img 
-                src={selectedCourse.posterUrl} 
-                alt={selectedCourse.title} 
-                className="w-full h-full object-cover" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-surface via-brand-surface/40 to-transparent"></div>
+            <div className="relative z-10 space-y-4 max-w-3xl">
+              <span className="text-[10px] uppercase font-black bg-brand-red/10 border border-brand-red/30 text-brand-red px-3 py-1 rounded-md tracking-widest inline-block">
+                {selectedCourse.category}
+              </span>
               
-              <div className="absolute bottom-4 left-6 right-6">
-                <span className="text-[9px] uppercase font-bold bg-brand-cyan/20 border border-brand-cyan/30 text-brand-cyan px-2.5 py-0.5 rounded-full inline-block mb-1">
-                  {selectedCourse.category}
-                </span>
-                <h2 className="text-xl md:text-2xl font-black text-white uppercase truncate">
-                  {selectedCourse.title}
-                </h2>
-              </div>
+              <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none">
+                {selectedCourse.title}
+              </h2>
+              
+              <p className="text-xs md:text-sm text-gray-300 leading-relaxed font-medium line-clamp-3">
+                {selectedCourse.description}
+              </p>
+
+              {/* Action play button */}
+              {selectedCourse.modules && selectedCourse.modules.length > 0 && (
+                <button
+                  onClick={() => {
+                    const firstModule = selectedCourse.modules[0];
+                    if (firstModule.videos && firstModule.videos.length > 0) {
+                      handlePlayVideo(firstModule.videos[0], selectedCourse, firstModule.title);
+                    } else if (firstModule.driveUrl) {
+                      handlePlayFolder(firstModule, selectedCourse);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-6 py-3 bg-brand-red hover:bg-brand-red-hover text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-lg hover:shadow-brand-red/30 hover:scale-105 cursor-pointer"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  Ver Desde el Principio
+                </button>
+              )}
             </div>
+          </div>
 
-            {/* Scrollable Accordion Content */}
-            <div className="p-6 overflow-y-auto custom-scrollbar flex-grow space-y-6">
-              {/* Description */}
-              <div className="space-y-1">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sinopsis de la Serie</h4>
-                <p className="text-xs md:text-sm text-gray-300 leading-relaxed">
-                  {selectedCourse.description}
-                </p>
-              </div>
+          {/* Season Tabs Selector */}
+          {selectedCourse.modules && selectedCourse.modules.length > 0 && (
+            <div className="bg-[#0c0d12] border-y border-white/5 px-6 md:px-12 py-4 shrink-0 flex items-center gap-3 overflow-x-auto no-scrollbar">
+              {selectedCourse.modules.map((mod, idx) => {
+                const isActive = activeSeasonId === mod.id;
+                return (
+                  <button
+                    key={mod.id}
+                    onClick={() => setActiveSeasonId(mod.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                      isActive 
+                        ? 'bg-brand-red text-white shadow-md' 
+                        : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    T{idx + 1}: {mod.title}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-              {/* Modules Accordion */}
-              <div className="space-y-3">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
-                  <Layers className="w-3.5 h-3.5 text-brand-cyan" />
-                  Módulos y Sub-cursos Disponibles
-                </h4>
-
-                {selectedCourse.modules.length === 0 ? (
-                  <div className="text-center p-6 bg-black/25 border border-white/5 rounded-2xl text-xs text-gray-500">
-                    No hay módulos estructurados para esta serie todavía.
+          {/* Episodes List Container */}
+          <div className="flex-grow max-w-7xl w-full mx-auto px-6 md:px-12 py-8 space-y-6">
+            {(() => {
+              const activeSeason = selectedCourse.modules?.find(m => m.id === activeSeasonId);
+              if (!activeSeason) {
+                return (
+                  <div className="text-center py-16 text-xs text-gray-500">
+                    No hay lecciones en esta temporada.
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    {selectedCourse.modules.map((mod) => {
-                      const isExpanded = expandedModuleId === mod.id;
-                      return (
+                );
+              }
+
+              const videosList = activeSeason.videos || [];
+
+              return (
+                <div className="space-y-6">
+                  <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-white/5 pb-3">
+                    <div>
+                      <h3 className="text-base font-black text-white uppercase tracking-wider">
+                        {activeSeason.title}
+                      </h3>
+                      <p className="text-xs text-gray-400 leading-relaxed mt-0.5">
+                        {activeSeason.description || 'Detalles de la temporada.'}
+                      </p>
+                    </div>
+
+                    {/* Direct drive folder link shortcut */}
+                    {activeSeason.driveUrl && (
+                      <button
+                        onClick={() => handlePlayFolder(activeSeason, selectedCourse)}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 text-brand-cyan rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer"
+                      >
+                        <Folder className="w-4 h-4" />
+                        Explorar Carpeta Drive
+                      </button>
+                    )}
+                  </div>
+
+                  {videosList.length === 0 ? (
+                    <div className="p-8 text-center bg-white/2 border border-white/5 rounded-2xl text-xs text-gray-500">
+                      {activeSeason.driveUrl ? (
+                        <div className="space-y-3">
+                          <p>No hay clases individuales registradas. Haz clic abajo para abrir la carpeta Drive.</p>
+                          <button
+                            onClick={() => handlePlayFolder(activeSeason, selectedCourse)}
+                            className="py-2 px-5 bg-brand-cyan hover:brightness-110 text-brand-dark font-black rounded-xl text-xs uppercase cursor-pointer"
+                          >
+                            Explorar Carpeta de Archivos
+                          </button>
+                        </div>
+                      ) : (
+                        'No hay capítulos disponibles en esta temporada.'
+                      )}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {videosList.map((vid, vIdx) => (
                         <div 
-                          key={mod.id} 
-                          className="border border-white/5 bg-black/20 rounded-2xl overflow-hidden transition-all duration-300"
+                          key={vid.id}
+                          onClick={() => handlePlayVideo(vid, selectedCourse, activeSeason.title)}
+                          className="flex gap-4 p-3 bg-white/2 hover:bg-white/5 border border-white/5 hover:border-brand-red/20 rounded-2xl transition-all cursor-pointer group flex-col sm:flex-row"
                         >
-                          {/* Accordion Trigger Header */}
-                          <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/2 select-none" onClick={() => toggleModuleExpand(mod.id)}>
-                            <div className="flex items-center gap-2">
-                              {isExpanded ? (
-                                <ChevronDown className="w-4.5 h-4.5 text-brand-red shrink-0" />
-                              ) : (
-                                <ChevronRight className="w-4.5 h-4.5 text-gray-400 shrink-0" />
-                              )}
-                              <div>
-                                <h5 className="font-black text-white text-xs md:text-sm uppercase tracking-wide">
-                                  {mod.title}
-                                </h5>
-                                <span className="text-[9px] text-gray-500 font-mono">
-                                  {(mod.videos || []).length} Clases
-                                </span>
+                          {/* Episode Thumbnail (16:9 Aspect) */}
+                          <div className="w-full sm:w-44 shrink-0 aspect-video rounded-xl overflow-hidden bg-black/40 relative">
+                            <img 
+                              src={vid.thumbnailUrl || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=400&q=80'} 
+                              alt={vid.title} 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-black/35 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <div className="p-2 bg-brand-red text-white rounded-full shadow-lg">
+                                <Play className="w-4 h-4 fill-white ml-0.5" />
                               </div>
                             </div>
-
-                            {/* Direct Drive Folder View Shortcut */}
-                            {mod.driveUrl && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation(); // Avoid expanding
-                                  handlePlayFolder(mod, selectedCourse);
-                                }}
-                                className="flex items-center gap-1.5 px-3 py-1 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/20 text-brand-cyan rounded-lg text-[9px] font-bold transition-all cursor-pointer"
-                                title="Abrir explorador de archivos de Drive"
-                              >
-                                <Folder className="w-3.5 h-3.5" />
-                                Explorar Carpeta
-                              </button>
-                            )}
+                            <span className="absolute bottom-1.5 right-1.5 text-[8px] text-white font-mono font-bold bg-black/80 px-1.5 py-0.5 rounded">
+                              {vid.duration}
+                            </span>
                           </div>
 
-                          {/* Accordion Expanded Panel */}
-                          {isExpanded && (
-                            <div className="p-4 border-t border-white/5 bg-black/10 animate-fade-in space-y-4">
-                              {mod.description && (
-                                <p className="text-xs text-gray-400 leading-relaxed italic border-l-2 border-brand-cyan/40 pl-2">
-                                  {mod.description}
-                                </p>
-                              )}
-
-                              {/* Classes checklist */}
-                              {(mod.videos || []).length === 0 ? (
-                                <div className="text-center py-4 text-xs text-gray-500">
-                                  {mod.driveUrl ? (
-                                    <div className="space-y-2">
-                                      <p>No hay clases individuales listadas en el CMS para este módulo.</p>
-                                      <button
-                                        onClick={() => handlePlayFolder(mod, selectedCourse)}
-                                        className="py-1.5 px-4 bg-brand-cyan text-brand-dark font-black rounded-lg text-[10px] uppercase cursor-pointer"
-                                      >
-                                        Explorar archivos de Google Drive
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    'No hay videos disponibles.'
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="space-y-2">
-                                  {(mod.videos || []).map((vid) => (
-                                    <button
-                                      key={vid.id}
-                                      onClick={() => handlePlayVideo(vid, selectedCourse, mod.title)}
-                                      className="w-full text-left p-3 bg-black/40 hover:bg-white/5 border border-white/5 hover:border-brand-red/30 rounded-xl transition-all flex items-center justify-between gap-4 cursor-pointer group/item"
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-white/5 group-hover/item:bg-brand-red text-gray-400 group-hover/item:text-white rounded-full transition-colors">
-                                          <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
-                                        </div>
-                                        <div>
-                                          <div className="font-bold text-white text-xs group-hover/item:text-brand-cyan transition-colors">
-                                            {vid.title}
-                                          </div>
-                                          <div className="text-[10px] text-gray-500 line-clamp-1 mt-0.5 pr-6">
-                                            {vid.description}
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <span className="shrink-0 flex items-center gap-1 text-[9px] text-gray-400 font-mono font-bold bg-white/5 px-2 py-0.5 rounded">
-                                        <Clock className="w-3.5 h-3.5 text-gray-500" />
-                                        {vid.duration}
-                                      </span>
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
+                          {/* Episode Description */}
+                          <div className="space-y-1 py-1 flex-grow">
+                            <div className="font-bold text-white text-xs md:text-sm group-hover:text-brand-cyan transition-colors leading-tight">
+                              Capítulo {vIdx + 1}: {vid.title.replace(/^\d+\.\s*/, '')}
                             </div>
-                          )}
+                            <p className="text-[11px] text-gray-500 leading-normal line-clamp-2">
+                              {vid.description}
+                            </p>
+                          </div>
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
